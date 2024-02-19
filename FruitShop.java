@@ -1,4 +1,8 @@
 package com.company.fruitShop;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 class InvalidInputException extends Exception {
     public InvalidInputException(String message) {
         super(message);
@@ -43,15 +47,15 @@ public class FruitShop {
         return totalPrice;
     }
 
-    public static double calculateTotalPriceForC(int appleWeight, int strawberryWeight, int mangoWeight) throws InvalidInputException,InvalidcalculateException {
+    public static String calculateTotalPriceForC(int appleWeight, int strawberryWeight, int mangoWeight) throws InvalidInputException,InvalidcalculateException {
         checkInput(appleWeight,strawberryWeight,mangoWeight);
         double strawberryPrice = STRAWBERRY_PRICE * STRAWBERRY_DISCOUNT;
-        double totalPrice = appleWeight * APPLE_PRICE + strawberryWeight * strawberryPrice + mangoWeight * MANGO_PRICE;
+        BigDecimal totalPrice = new BigDecimal(appleWeight * APPLE_PRICE).add(new BigDecimal(strawberryWeight * strawberryPrice)).add(new BigDecimal(mangoWeight * MANGO_PRICE));
         //验证结果
-        if (totalPrice-appleWeight * APPLE_PRICE - strawberryWeight * strawberryPrice !=mangoWeight * MANGO_PRICE){
+        if (totalPrice.subtract(new BigDecimal(appleWeight * APPLE_PRICE)).subtract(new BigDecimal(strawberryWeight * strawberryPrice)).equals(new BigDecimal(mangoWeight * MANGO_PRICE))){
             throw new InvalidcalculateException("计算结果错误，请检查溢出情况");
         }
-        return totalPrice;
+        return totalPrice.setScale(1, RoundingMode.HALF_UP).toString();
     }
 
     public static double calculateTotalPriceForD(int appleWeight, int strawberryWeight, int mangoWeight) throws InvalidInputException,InvalidcalculateException {
@@ -93,7 +97,7 @@ public class FruitShop {
             int appleWeightC = 3;
             int strawberryWeightC = 2;
             int mangoWeightC = 1;
-            double totalPriceC = calculateTotalPriceForC(appleWeightC, strawberryWeightC, mangoWeightC);
+            String totalPriceC = calculateTotalPriceForC(appleWeightC, strawberryWeightC, mangoWeightC);
             System.out.println("Total price for customer C: " + totalPriceC);
 
             // 顾客D购买情况
